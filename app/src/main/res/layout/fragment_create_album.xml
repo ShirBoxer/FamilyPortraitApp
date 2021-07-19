@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_album_f"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main"
+    tools:context=".CreateAlbumFragment">
+
+    <TextView
+        android:id="@+id/stam_Header"
+        android:layout_width="0dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="8dp"
+        android:text="Create new album HEADR"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/create_album_spinner"
+        android:layout_width="82dp"
+        android:layout_height="29dp"
+        android:background="@drawable/round_border"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="@+id/create_album_f_img_iv"
+        app:layout_constraintEnd_toStartOf="@+id/create_album_f_img_iv" />
+
+    <ImageView
+        android:id="@+id/create_album_f_img_iv"
+        android:layout_width="144dp"
+        android:layout_height="114dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/ic_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stam_Header"
+        app:srcCompat="@drawable/ic_menu_camera"
+        tools:ignore="VectorDrawableCompat" />
+
+    <EditText
+        android:id="@+id/create_album_f_name_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name your album"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_album_f_img_iv" />
+
+    <EditText
+        android:id="@+id/create_album_f_description_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Description"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_album_f_name_et" />
+
+    <Button
+        android:id="@+id/create_album_f_create_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="Create"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_album_f_description_et" />
+
+    <Button
+        android:id="@+id/create_album_f_add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Add"
+        app:cornerRadius="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/create_album_f_img_iv"
+        app:layout_constraintStart_toEndOf="@+id/create_album_f_img_iv" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

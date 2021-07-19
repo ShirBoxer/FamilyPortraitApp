@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1057560348764",
+    "project_id": "familyportraitapp",
+    "storage_bucket": "familyportraitapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057560348764:android:7bf579251e4161ce24fe99",
+        "android_client_info": {
+          "package_name": "com.example.familyportraitapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057560348764-v513uaqtubd57pcc21vou996rb9rak5s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7lxVFU6P4c8Yi1wpmIxXp8p7px6tDkqc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057560348764-v513uaqtubd57pcc21vou996rb9rak5s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

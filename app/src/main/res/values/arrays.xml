@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="condition" >
+        <item>None</item>
+        <item>Hotels</item>
+        <item>Parks</item>
+        <item>Nature</item>
+        <item>Family</item>
+    </string-array>
+</resources>
