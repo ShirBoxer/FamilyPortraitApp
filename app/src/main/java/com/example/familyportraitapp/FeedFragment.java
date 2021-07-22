@@ -61,10 +61,10 @@ public class FeedFragment extends Fragment {
 
         //Select row listener
         adapter.setOnItemClickListener((int position)->{
-            String adviseId = albumsList.getValue().get(position).getId();
+            String albumId = albumsList.getValue().get(position).getId();
             //TODO
-            //FeedFragmentDirections.ActionFeedFragmentToAlbumFragment3 action = FeedFragmentDirections.actionFeedFragmentToAlbumFragment3(adviseId);
-            //Navigation.findNavController(view).navigate(action);
+            FeedFragmentDirections.ActionFeedFragmentToAlbumFragment action = FeedFragmentDirections.actionFeedFragmentToAlbumFragment(albumId);
+            Navigation.findNavController(view).navigate(action);
         });
 
 

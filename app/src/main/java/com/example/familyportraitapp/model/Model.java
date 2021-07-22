@@ -1,6 +1,7 @@
 package com.example.familyportraitapp.model;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -131,6 +132,8 @@ public class Model {
         albumsLoadingState.setValue(LoadingState.loading);
         ModelFirebase.saveAlbum(album, ()->{
             getAllAlbums();
+            Log.d("TAG", "HERE");
+            Log.d("TAG", album.getDescription());
             listener.onComplete();
         });
 
@@ -160,6 +163,9 @@ public class Model {
 
         albumsLoadingState.setValue(LoadingState.loaded);
     }
+
+
+
 
 
     /* ################################# ---  Utils  --- ################################# */

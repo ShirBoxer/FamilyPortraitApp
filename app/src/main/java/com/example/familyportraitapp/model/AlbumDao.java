@@ -23,6 +23,4 @@ public interface AlbumDao {
     @Delete
     void delete(Album albums);
 
-
-
 }

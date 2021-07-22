@@ -135,15 +135,14 @@ public class CreateAlbumFragment extends Fragment {
         else
             photoUrl = url;
 
-        //TODO: take uid from ModelFirebase!!!!
-        Album album = new Album(id, name, description, new LinkedList<String>() ,owner, photoUrl);
-        //Post post = new Post(id, description, "New Advise Created By" + FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), photoUrl);
+
+        Album album = new Album(id, name, description, new LinkedList<>() ,owner, photoUrl);
 
         Model.instance.saveAlbum(album, ()->{
             //TODO TOAST
-            //TODO
-            //Navigation.findNavController(view).navigate(R.id.action_addAdviseFragment_to_feedFragment);
+            //TODO: take uid from ModelFirebase!!!!
         });
+        Navigation.findNavController(view).navigate(R.id.action_createAlbumFragment_to_feedFragment);
 
     }
 

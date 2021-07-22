@@ -82,10 +82,14 @@ public class ModelFirebase {
 
 
 
+
     /* ################################# ---  Album CRUD  --- ################################# */
 
     public interface GetAllAlbumsListener{
         public void onComplete(List<Album> albums);
+    }
+    public interface GetAlbumListener{
+        public void onComplete(Album album);
     }
 
     public static void getAllAlbums(Long since, String owner, GetAllAlbumsListener listener){
@@ -117,8 +121,14 @@ public class ModelFirebase {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(albumsCollection).document(album.getId())
                 .set(album.toJson())
-                .addOnSuccessListener((v) -> listener.onComplete())
-                .addOnFailureListener((e) -> listener.onComplete());
+                .addOnSuccessListener((v) ->{
+                    listener.onComplete();
+                    Log.d("TAG", "success");
+                })
+                .addOnFailureListener((e) ->{
+                    listener.onComplete();
+                    Log.d("TAG", "Failed");
+                });
     }
 
     public static void deleteAlbum(Album album, Model.OnCompleteListener listener) {

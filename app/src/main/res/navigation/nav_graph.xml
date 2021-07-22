@@ -42,7 +42,11 @@
         android:id="@+id/feedFragment"
         android:name="com.example.familyportraitapp.FeedFragment"
         android:label="fragment_feed"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_feed" >
+        <action
+            android:id="@+id/action_feedFragment_to_albumFragment"
+            app:destination="@id/albumFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createAlbumFragment"
         android:name="com.example.familyportraitapp.CreateAlbumFragment"
@@ -51,5 +55,14 @@
         <action
             android:id="@+id/action_createAlbumFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/albumFragment"
+        android:name="com.example.familyportraitapp.AlbumFragment"
+        android:label="fragment_album"
+        tools:layout="@layout/fragment_album" >
+        <argument
+            android:name="albumId"
+            app:argType="string" />
     </fragment>
 </navigation>

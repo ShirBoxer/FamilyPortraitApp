@@ -32,5 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            return navController.navigateUp();
+        }else{
+            return NavigationUI.onNavDestinationSelected(item,navController);
+        }
+    }
 }

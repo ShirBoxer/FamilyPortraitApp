@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1057560348764",
-    "project_id": "familyportraitapp",
-    "storage_bucket": "familyportraitapp.appspot.com"
+    "project_number": "224764631115",
+    "project_id": "family-portrait-2b783",
+    "storage_bucket": "family-portrait-2b783.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1057560348764:android:7bf579251e4161ce24fe99",
+        "mobilesdk_app_id": "1:224764631115:android:0b8e09e489339087ded5ce",
         "android_client_info": {
           "package_name": "com.example.familyportraitapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1057560348764-v513uaqtubd57pcc21vou996rb9rak5s.apps.googleusercontent.com",
+          "client_id": "224764631115-dcdj7b6uuepptctgchd6flg2mhnc8hdj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB7lxVFU6P4c8Yi1wpmIxXp8p7px6tDkqc"
+          "current_key": "AIzaSyBitns_t152Vxts41B54JmQmoi7_glDkaY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1057560348764-v513uaqtubd57pcc21vou996rb9rak5s.apps.googleusercontent.com",
+              "client_id": "224764631115-dcdj7b6uuepptctgchd6flg2mhnc8hdj.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
