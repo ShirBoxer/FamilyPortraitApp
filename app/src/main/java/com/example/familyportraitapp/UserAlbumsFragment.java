@@ -28,7 +28,6 @@ import java.util.List;
 
 public class UserAlbumsFragment extends Fragment {
     LiveData<List<Album>> userAlbumsList;
-    ProgressBar progressBar;
     SwipeRefreshLayout swipeRefresh;
     UserAlbumsViewModel viewModel;
 
@@ -38,7 +37,8 @@ public class UserAlbumsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_albums, container, false);
         viewModel = new ViewModelProvider(this).get(UserAlbumsViewModel.class);
-
+        swipeRefresh = view.findViewById(R.id.user_albums_f_swiperefresh);
+        setupProgressListener();
         RecyclerView recyclerView = view.findViewById(R.id.user_albums_f_recycler);
         //better performance
         recyclerView.setHasFixedSize(true);
@@ -64,9 +64,8 @@ public class UserAlbumsFragment extends Fragment {
 
         BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
         navBar.setVisibility(View.VISIBLE);
-        swipeRefresh = view.findViewById(R.id.user_albums_f_swiperefresh);
         swipeRefresh.setOnRefreshListener(() -> {
-            Model.instance.getAllAlbums();
+            viewModel.getUserAlbumsList();
             ; //TODO: CREATE REFRESH FUNCTION IN THE VIEWMODEL OBJECT
         });
         // set progressBar and swipeRefresh states
@@ -81,14 +80,12 @@ public class UserAlbumsFragment extends Fragment {
     }
 
     private void setupProgressListener() {
-        Model.instance.albumsLoadingState.observe(getViewLifecycleOwner(), (state) -> {
+        Model.instance.userAlbumsLoadingState.observe(getViewLifecycleOwner(), (state) -> {
             switch (state) {
                 case loaded:
-                    //progressBar.setVisibility(View.GONE);
                     swipeRefresh.setRefreshing(false);
                     break;
                 case loading:
-                    //progressBar.setVisibility(View.VISIBLE);
                     swipeRefresh.setRefreshing(true);
                     break;
                 case error:

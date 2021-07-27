@@ -19,11 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.familyportraitapp.model.Model;
-import com.example.familyportraitapp.model.ModelFirebase;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+
 
 
 public class LoginFragment extends Fragment {
@@ -68,61 +64,51 @@ public class LoginFragment extends Fragment {
                 passwordEt.setError("Please enter the right password.");
                 return;
             }
+            Model.instance.logIn(email, password, (success) -> {
+                if(success){
+                    CharSequence text = "Logged in Successfully";
+                    Log.d("TAG", text.toString());
+                    Toast.makeText(getContext(),text , Toast.LENGTH_LONG).show();
+                    Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_feedFragment);
+                }else{
+                    loginBtn.setEnabled(true);
+                    Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    Log.d("TAG", "Login failed for User : " + email);
 
-            ModelFirebase.getFirebaseAuth()
-                    .signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener((@NonNull Task<AuthResult> task)-> {
-                        if (task.isSuccessful()) {
-                            CharSequence text = "Logged in Successfully";
-                            Log.d("TAG", "success");
-                            Toast.makeText(getContext(),text , Toast.LENGTH_LONG).show();
-                            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_feedFragment);
-                        } else{
-                            //TODO : toast?
-                            loginBtn.setEnabled(true);
-                            Toast.makeText(getContext(), "Error! " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            Log.d("TAG", "fail");
-                        }
-                    });
+                }
+            });
+
+
         });
 
         forgotPassTv.setOnClickListener((v)->{
-            EditText resetMail=new EditText(v.getContext());
-            AlertDialog.Builder passwordRestDialog=new AlertDialog.Builder(v.getContext());
+            EditText resetMail = new EditText(v.getContext());
+            AlertDialog.Builder passwordRestDialog = new AlertDialog.Builder(v.getContext());
             passwordRestDialog.setTitle("Reset password ?");
             passwordRestDialog.setMessage("Enter Your Email To Receive Reset Link");
             passwordRestDialog.setView(resetMail);
 
-            passwordRestDialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //extract the email and sent reset link
-                    String mail=resetMail.getText().toString();
-                    Model.instance.getAuthManager().sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(),"Reset Link Sent To Your Email",Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(),"Error ! Reset Link did not Sent !",Toast.LENGTH_LONG).show();
-                            Log.d("PASSWORD", "Reset password  failed: " + e.getMessage());
+            passwordRestDialog.setPositiveButton("Send",(DialogInterface dialog, int which) -> {
+                //extract the email and sent reset link
+                String mail = resetMail.getText().toString();
+                Model.instance.resetPassword(mail, (success) -> {
+                    if (success) {
+                        Toast.makeText(getContext(), "Reset Link Sent To Your Email", Toast.LENGTH_LONG).show();
+                        Log.d("PASSWORD", "Reset password  success: ");
 
-                        }
-                    });
-
-                }
-            } );
-
-            passwordRestDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //close the dialog
-                }
+                    } else {
+                        Toast.makeText(getContext(), "Error ! Reset Link did not Sent !", Toast.LENGTH_LONG).show();
+                        Log.d("PASSWORD", "Reset password  failed for user: " + mail);
+                    }
+                });
             });
-            passwordRestDialog.create().show();
 
+            passwordRestDialog.setNegativeButton("Cancel",(DialogInterface dialog, int which) -> {
+                //close the dialog
+                dialog.dismiss();
+            });
+
+            passwordRestDialog.create().show();
 
         });
         return view;

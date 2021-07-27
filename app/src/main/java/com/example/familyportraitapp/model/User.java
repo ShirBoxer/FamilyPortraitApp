@@ -10,6 +10,16 @@ public class User {
     private String name;
     private String phoneNumber;
 
+    public User() {
+    }
+
+    public User(String id, String imageUrl, String name, String phoneNumber) {
+        this.id = id;
+        this.imageUrl = imageUrl;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Map<String, Object> toMap(){
         HashMap<String, Object> json = new HashMap<>();
         json.put("id", id);
@@ -18,11 +28,12 @@ public class User {
         json.put("imageUrl", imageUrl);
         return json;
     }
-    public void fromMap(Map<String, Object> map) {
+    public User fromMap(Map<String, Object> map) {
         this.id = (String) map.get("id");
         this.name = (String) map.get("name");
         this.phoneNumber = (String) map.get("phone");
         this.imageUrl = (String) map.get("imageUrl");
+        return this;
     }
 
     public String getId() {

@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 public class ImageFragment extends Fragment {
 
    ImageView mainImageIv;
-   FloatingActionButton deleteBtn;
+   //FloatingActionButton deleteBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,21 +30,29 @@ public class ImageFragment extends Fragment {
         String albumOwner = ImageFragmentArgs.fromBundle(getArguments()).getAlbumOwner();
 
         mainImageIv = view.findViewById(R.id.image_f_iv);
-        deleteBtn = view.findViewById(R.id.image_f_delete_btn);
+        //deleteBtn = view.findViewById(R.id.image_f_delete_btn);
 
-       if (Model.instance.getAuthManager().getCurrentUser().getEmail().equals(albumOwner)){
-           deleteBtn.setVisibility(View.VISIBLE);
-       }
+//       if (Model.instance.isCurrentUser(albumOwner)){
+//           deleteBtn.setVisibility(View.VISIBLE);
+//       }
         Picasso.get()
                 .load(imageUrl)
                 .placeholder(R.drawable.ic_menu_gallery)
                 .error(R.drawable.ic_menu_gallery)
                 .into(mainImageIv);
 
-        deleteBtn.setOnClickListener((v -> {
-           // Model.instance.deleteImageFromAlbum(albumId, imageUrl);
-            Navigation.findNavController(view).navigateUp();
-        }));
+//        deleteBtn.setOnClickListener((v -> {
+//            Model.instance.deleteImageFromAlbum(albumId, imageUrl , (success) -> {
+//                if(success){
+//                    //log
+//                    //toast
+//                }else{
+//                    //log
+//                    //toast
+//                }
+//            });
+//            Navigation.findNavController(view).navigateUp();
+//        }));
 
         return view;
     }

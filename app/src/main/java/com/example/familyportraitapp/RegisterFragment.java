@@ -17,10 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.familyportraitapp.model.Model;
-import com.example.familyportraitapp.model.ModelFirebase;
 import com.example.familyportraitapp.model.User;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RegisterFragment extends Fragment {
@@ -49,13 +49,13 @@ public class RegisterFragment extends Fragment {
         //User logged out & rolled back to main fragment
         if (MainActivity.bottomNavigationView != null)
             MainActivity.bottomNavigationView.setVisibility(View.GONE);
-
+        List<String> args = new ArrayList<>();
         regBtn.setOnClickListener((v) -> {
-            String name=fullName.getText().toString().trim();
-            String mail=email.getText().toString().trim();
-            String pass1=password.getText().toString().trim();
-            String pass2=password2.getText().toString().trim();
-            String phoneNum=phone.getText().toString().trim();
+            String name = fullName.getText().toString().trim();
+            String mail = email.getText().toString().trim();
+            String pass1 = password.getText().toString().trim();
+            String pass2 = password2.getText().toString().trim();
+            String phoneNum = phone.getText().toString().trim();
             //Input validation
             if(TextUtils.isEmpty(name))
             {
@@ -77,7 +77,6 @@ public class RegisterFragment extends Fragment {
                 password.setError("please enter a  password");
                 return;
             }
-
             if((pass1.compareTo(pass2))!=0)
             {
 
@@ -91,28 +90,22 @@ public class RegisterFragment extends Fragment {
             }
             pb.setVisibility(View.VISIBLE);
             regBtn.setEnabled(false);
-
+            User user = new User(mail, "", name, phoneNum);
 
             //TODO
-            ModelFirebase.getFirebaseAuth().createUserWithEmailAndPassword(mail, pass1).addOnCompleteListener((@NonNull Task<AuthResult> task)->{
-                if(task.isSuccessful()) {
-                    User user = new User();
-                    user.setId(mail);
-                    user.setName(name);
-                    user.setPhoneNumber(phoneNum);
-                    Model.instance.addUser(user, () -> {
-                        Log.d("TAG", "A new user was asserted to the db " + mail);
-                    });
-                    Toast.makeText(getContext(), "user registered", Toast.LENGTH_LONG).show();
+            Model.instance.createUser(user ,pass1, (success) -> {
+                if(success) {
+                    Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_LONG).show();
+                    Log.d("USER","User " + user.getId() +  " added successfully");
                     Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment);
-
                 }
-
-                else {
+                else
+                 {
+                    pb.setVisibility(View.GONE);
                     regBtn.setEnabled(true);
-                    Log.d("TAG", "failed to creat a new user");
-                    Toast.makeText(getContext(), "Aawwww.. something went wrong, please try again", Toast.LENGTH_LONG).show();
-                }
+                     Log.d("USER","User " + user.getId() +  " Failed to create user");
+                    Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                 }
             });
 
         });

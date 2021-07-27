@@ -28,7 +28,6 @@ import java.util.List;
 
 public class FeedFragment extends Fragment {
     LiveData<List<Album>> albumsList;
-    ProgressBar progressBar;
     SwipeRefreshLayout swipeRefresh;
     FeedViewModel viewModel;
 
@@ -40,9 +39,9 @@ public class FeedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
 
         viewModel = new ViewModelProvider(this).get(FeedViewModel.class);
-        //view.findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
-
-        RecyclerView recyclerView = view.findViewById(R.id.feed_advises_f_recycler);
+        // set swipeRefresh states
+        setupProgressListener();
+        RecyclerView recyclerView = view.findViewById(R.id.feed_f_recycler);
         //better performance
         recyclerView.setHasFixedSize(true);
 
@@ -53,11 +52,6 @@ public class FeedFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         albumsList = viewModel.getAlbumsList();
 
-
-        // if we navigate from profile to myAdvises
-        //String userEmail = FeedFragmentArgs.fromBundle(getArguments()).getUserId();
-        //if(!"null".equals(userEmail))
-        //   advisesList = Model.instance.getAllByOwner(userEmail);
 
         //Select row listener
         adapter.setOnItemClickListener((int position)->{
@@ -72,13 +66,11 @@ public class FeedFragment extends Fragment {
         BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
         navBar.setVisibility(View.VISIBLE);
 
-        swipeRefresh = view.findViewById(R.id.feed_advises_f_swiperefresh);
+        swipeRefresh = view.findViewById(R.id.feed_f_swiperefresh);
         swipeRefresh.setOnRefreshListener(() -> {
-            Model.instance.getAllAlbums();
-            ; //TODO: CREATE REFRESH FUNCTION IN THE VIEWMODEL OBJECT
+            Model.instance.getAllAlbums((albums)->{});
         });
-        // set progressBar and swipeRefresh states
-        setupProgressListener();
+
         // observe liveData object on start and resume
         // notify adapter when posts list arrive
         viewModel.getAlbumsList()
@@ -90,11 +82,9 @@ public class FeedFragment extends Fragment {
         Model.instance.albumsLoadingState.observe(getViewLifecycleOwner(), (state) -> {
             switch (state) {
                 case loaded:
-                    //progressBar.setVisibility(View.GONE);
                     swipeRefresh.setRefreshing(false);
                     break;
                 case loading:
-                    //progressBar.setVisibility(View.VISIBLE);
                     swipeRefresh.setRefreshing(true);
                     break;
                 case error:

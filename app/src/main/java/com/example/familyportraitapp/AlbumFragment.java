@@ -1,11 +1,16 @@
 package com.example.familyportraitapp;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -25,9 +30,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.familyportraitapp.model.Album;
 import com.example.familyportraitapp.model.Model;
+import com.example.familyportraitapp.model.MyApplication;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
@@ -36,13 +43,12 @@ import com.squareup.picasso.Picasso;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 
 public class AlbumFragment extends Fragment {
     LiveData<Album> album;
     FeedViewModel viewModel;
-    //TODO:
-    ProgressBar progressBar;
     SwipeRefreshLayout swipeRefresh;
 
     TextView headerTv;
@@ -55,6 +61,8 @@ public class AlbumFragment extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Bitmap imageBitmap;
     View view;
+    static final int PERMISSION_CODE = 1001;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,21 +106,22 @@ public class AlbumFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         //album = viewModel.getAlbum();
 
-        //TODO: SET HEADER AND DESCRRIPTION CONTENT
         headerTv.setText(album.getValue().getName());
         descriptionTv.setText(album.getValue().getDescription());
-        Picasso.get()
-                .load(album.getValue().getMainPhotoUrl())
-                .placeholder(R.drawable.ic_menu_gallery)
-                .error(R.drawable.ic_menu_gallery)
-                .into(mainImgIv);
-        if(Model.instance.getAuthManager().getCurrentUser()
-                .getEmail().equals(album.getValue().getOwner())) {
+        String mainUrl = album.getValue().getMainPhotoUrl();
+        if(mainUrl != null && !mainUrl.equals(""))
+            Picasso.get()
+                    .load(album.getValue().getMainPhotoUrl())
+                    .placeholder(R.drawable.ic_menu_gallery)
+                    .error(R.drawable.ic_menu_gallery)
+                    .into(mainImgIv);
+
+        if(Model.instance.isCurrentUser(album.getValue().getOwner())) {
             addBtn.setVisibility(View.VISIBLE);
             editBtn.setVisibility(View.VISIBLE);
 
             addBtn.setOnClickListener((v) -> {
-                takePicture();
+                LoadCDialogAndImage();
             });
 
             editBtn.setOnClickListener((v) -> {
@@ -130,11 +139,10 @@ public class AlbumFragment extends Fragment {
         BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
         navBar.setVisibility(View.VISIBLE);
 
-//        swipeRefresh = view.findViewById(R.id.album_f_swiperefresh);
-//        swipeRefresh.setOnRefreshListener(() -> {
-//            Model.instance.getAllAdvises();
-//            ; //TODO: CREATE REFRESH FUNCTION IN THE VIEWMODEL OBJECT
-//        });
+        swipeRefresh.setOnRefreshListener(() -> {
+            Model.instance.getAllUserAlbums((success) -> {});
+            ; //TODO: CREATE REFRESH FUNCTION IN THE VIEWMODEL OBJECT
+        });
 
         setupProgressListener();
         // observe liveData object on start and resume
@@ -149,11 +157,9 @@ public class AlbumFragment extends Fragment {
         Model.instance.albumsLoadingState.observe(getViewLifecycleOwner(), (state) -> {
             switch (state) {
                 case loaded:
-                    //progressBar.setVisibility(View.GONE);
                     swipeRefresh.setRefreshing(false);
                     break;
                 case loading:
-                    //progressBar.setVisibility(View.VISIBLE);
                     swipeRefresh.setRefreshing(true);
                     break;
                 case error:
@@ -162,10 +168,34 @@ public class AlbumFragment extends Fragment {
         });
     }
 
-    private void takePicture(){
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
+    private void LoadCDialogAndImage() {
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Choose your option:");
+        builder.setItems(options,(DialogInterface dialog, int item) -> {
+            if (options[item].equals("Take Photo")) {
+                Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, 0);
+            } else if (options[item].equals("Choose from Gallery")) {
+                //Ask User for permissions
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                        (checkSelfPermission(MyApplication.context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED))
+                {
+                    //permission not granted, request it
+                    String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                    requestPermissions(permissions, PERMISSION_CODE);
+                }
+                else
+                {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto, 1);
+                }
 
+            } else if (options[item].equals("Cancel"))
+                dialog.dismiss();
+
+        });
+        builder.show();
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -186,17 +216,26 @@ public class AlbumFragment extends Fragment {
             Model.instance.uploadImage(imageBitmap, new Timestamp(new Date()).toString(), (url) ->{
                 if(url != null){
                     album.getValue().getPhotosUrlList().add(url);
-                    Model.instance.saveAlbum(album.getValue(), ()->{
-                        this.adapter.notifyDataSetChanged();
-                    });
+                    Model.instance.saveAlbum(album.getValue(), (success)->{
+                        if(success){
+                            this.adapter.notifyDataSetChanged();
+                        }else{
+                            Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                        }
 
+                    });
                 }
-                else return; //TODO: show error to the user
+                else{
+                    Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    return;
+                }
             });
         }
-        else
-            return; //TODO: show error to the user
-        //Navigation.findNavController(view).navigateUp();
+        else{
+            Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+            return;
+        }
+        //dshmdNavigation.findNavController(view).navigateUp();
     }
 
 

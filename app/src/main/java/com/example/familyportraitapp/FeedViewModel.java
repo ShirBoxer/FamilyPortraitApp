@@ -12,7 +12,7 @@ public class FeedViewModel extends ViewModel {
     LiveData<List<Album>> AlbumsList;
 
     public FeedViewModel() {
-        this.AlbumsList = Model.instance.getAllAlbums();
+        this.AlbumsList = Model.instance.getAllAlbums((success) -> {});
     }
 
     public LiveData<List<Album>> getAlbumsList() {

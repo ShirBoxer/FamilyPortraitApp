@@ -3,14 +3,19 @@ package com.example.familyportraitapp.model;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
+import androidx.navigation.Navigation;
 
+import com.example.familyportraitapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -37,44 +42,50 @@ public class ModelFirebase {
 
     private ModelFirebase(){} // mono state class ??
 
-    public static FirebaseAuth getInstance(){
+
+    public static FirebaseAuth getAuthManager(){
         return FirebaseAuth.getInstance();
     }
 
     public static FirebaseUser getCurrentUser(){
-        return getInstance().getCurrentUser();
+        return getAuthManager().getCurrentUser();
     }
 
     public static FirebaseFirestore getFirestore(){
         return FirebaseFirestore.getInstance();
     }
 
-
     /* ################################# ---  User CRUD  --- ################################# */
+    public static void createUser(User user,String password, final Model.OnCompleteListener listener ) {
+        getAuthManager().createUserWithEmailAndPassword(user.getId(),password)
+                .addOnCompleteListener((@NonNull Task<AuthResult> task)->{
+                    if(task.isSuccessful()){
+                        FirebaseFirestore db = getFirestore();
+                        db.collection(usersCollection).document(user.getId())
+                                .set(user.toMap())
+                                .addOnCompleteListener((aVoid) -> {
+                                    listener.onComplete(true);
+                                })
+                                .addOnFailureListener((@NonNull Exception e)-> {
+                                    Log.d("USER", e.getMessage());
+                                    listener.onComplete(false);
+                                });
+                    }
+                    else{
+                        Log.d("USER", task.getException().getMessage());
+                        listener.onComplete(false);
+                    }
 
-    public static void addUser(User user, final Model.OnCompleteListener listener) {
-        // get firestore instance
-        FirebaseFirestore db = getFirestore();
+                });
 
-        db.collection(usersCollection).document(user.getId())
-                .set(user.toMap()).addOnCompleteListener()
-                    .addOnSuccessListener((Void aVoid) -> {
-                    Log.d("TAG","user added successfully");
-                            listener.onComplete();
-                    })
-                    .addOnFailureListener((@NonNull Exception e) -> {
-                            Log.d("TAG","fail adding user");
-                            listener.onComplete();
-                    });
+
     }
 
     public static void getUser(final Model.GetUserListener listener){
-        FirebaseFirestore.getInstance().collection(usersCollection)
-                .document(ModelFirebase.getFirebaseAuth().getCurrentUser().getEmail())
+        getFirestore().collection(usersCollection).document(getCurrentUser().getEmail())
                 .get().addOnCompleteListener((@NonNull Task<DocumentSnapshot> task)->{
             if(task.isSuccessful() && (task.getResult() != null)){
-                User user = new User();
-                user.fromMap(task.getResult().getData());
+                User user = (new User()).fromMap(task.getResult().getData());
                 listener.onComplete(user);
                 return;
             }
@@ -83,71 +94,115 @@ public class ModelFirebase {
     }
 
     public static void setUserProfileImage(String url, Model.OnCompleteListener listener) {
-        FirebaseFirestore.getInstance().collection(usersCollection)
-                .document(ModelFirebase.getFirebaseAuth().getCurrentUser().getEmail())
+        getFirestore().collection(usersCollection).document(getCurrentUser().getEmail())
                 .update("imageUrl", url)
                 .addOnCompleteListener((@NonNull Task<Void> task)->{
-                    listener.onComplete();
+                    if(task.isSuccessful() && task.getResult() != null){
+                        listener.onComplete(true);
+                    }else{
+                        listener.onComplete(false);
+                    }
                 });
     }
 
+    public static void logIn(String mail, String password, Model.OnCompleteListener listener ){
+        getAuthManager().signInWithEmailAndPassword(mail, password)
+                .addOnCompleteListener( task -> {
+                    if (task.isSuccessful())
+                        listener.onComplete(true);
+                    else
+                        listener.onComplete(false);
 
+                });
+    }
 
+    public static void signOut(){
+        getAuthManager().signOut();
+    }
+
+    public static void delete(){
+        getCurrentUser().delete();
+    }
+
+    public static void resetPassword(String mail, final Model.OnCompleteListener listener){
+        getAuthManager()
+                .sendPasswordResetEmail(mail)
+                .addOnSuccessListener((v) -> listener.onComplete(true))
+                .addOnFailureListener((v) -> listener.onComplete(false));
+    }
 
 
     /* ################################# ---  Album CRUD  --- ################################# */
 
-    public interface GetAllAlbumsListener{
-        public void onComplete(List<Album> albums);
-    }
-    public interface GetAlbumListener{
-        public void onComplete(Album album);
-    }
 
-    public static void getAllAlbums(Long since, String owner, GetAllAlbumsListener listener){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+    public static void getAllAlbums(Long since, Model.OnGetAlbumsComplete listener){
+        FirebaseFirestore db = getFirestore();
+        String owner = getCurrentUser().getEmail();
         db.collection(albumsCollection)
                 .whereGreaterThanOrEqualTo(Album.LAST_UPDATED, new Timestamp(since,0))
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>(){
-                    List<Album> list = new LinkedList<Album>();
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task){
+                .addOnCompleteListener((@NonNull Task<QuerySnapshot> task)->{
+                        List<Album> list = new LinkedList<Album>();
                         if(task.isSuccessful()){
-                            for (QueryDocumentSnapshot document : task.getResult()){
-                                Album album = Album.createAlbum(document.getData());
-                                if(owner == null || album.getOwner().equals(owner))
-                                    list.add(album);
-                            }
-                        }else{
-
+                            for (QueryDocumentSnapshot document : task.getResult())
+                                list.add(Album.createAlbum(document.getData()));
+                            listener.onComplete(new MutableLiveData<>(list));
                         }
-                        listener.onComplete(list);
-                    }
+                        else
+                            listener.onComplete(null);
+
                 });
+
+    }
+
+    public static void getAllUserAlbums(Long since, Model.OnGetAlbumsComplete listener){
+        FirebaseFirestore db = getFirestore();
+        String owner = getCurrentUser().getEmail();
+        db.collection(albumsCollection)
+                .whereGreaterThanOrEqualTo(Album.LAST_UPDATED, new Timestamp(since,0))
+                .whereEqualTo(Album.OWNER, owner)
+                .get()
+                .addOnCompleteListener((@NonNull Task<QuerySnapshot> task)->{
+                    List<Album> list = new LinkedList<Album>();
+                    if(task.isSuccessful()){
+                        for (QueryDocumentSnapshot document : task.getResult())
+                            list.add(Album.createAlbum(document.getData()));
+                        listener.onComplete(new MutableLiveData<>(list));
+                    }
+                    else
+                        listener.onComplete(null);
+
+                });
+
     }
 
     public static void saveAlbum(Album album, Model.OnCompleteListener listener) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        album.setOwner(getCurrentUser().getEmail());
         db.collection(albumsCollection).document(album.getId())
                 .set(album.toJson())
                 .addOnSuccessListener((v) ->{
-                    listener.onComplete();
-                    Log.d("TAG", "success");
+                    listener.onComplete(true);
+                    Log.d("ALBUM", "saveAlbum success");
                 })
                 .addOnFailureListener((e) ->{
-                    listener.onComplete();
-                    Log.d("TAG", "Failed");
+                    listener.onComplete(false);
+                    Log.d("ALBUM", "saveAlbum failed");
                 });
     }
 
     public static void deleteAlbum(Album album, Model.OnCompleteListener listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(albumsCollection).document(album.getId()).delete()
-                .addOnSuccessListener((v) -> listener.onComplete())
-                .addOnFailureListener((e) -> listener.onComplete());;
+                .addOnSuccessListener((v) ->{
+                    Log.d("ALBUM", "deleteAlbum success");
+                    listener.onComplete(true);
+                })
+                .addOnFailureListener((e) ->{
+                    Log.d("ALBUM", "deleteAlbum success");
+                    listener.onComplete(false);
+                });;
     }
 
 

@@ -9,14 +9,14 @@ import com.example.familyportraitapp.model.Model;
 import java.util.List;
 
 public class AlbumViewModel extends ViewModel {
-//    LiveData<List<String>> photosUrl;
+//    LiveData<Album> album;
 //
 //    public AlbumViewModel() {
-//        Model.instance.get
+//        album = Model.instance.getAlbumById();
 //    }
 //
 //
 //    public LiveData<Album> getAlbum() {
-//        return photosUrl;
+//        return album;
 //    }
 }

@@ -12,10 +12,13 @@ public class UserAlbumsViewModel extends ViewModel {
     LiveData<List<Album>> UserAlbumsList;
 
     public UserAlbumsViewModel() {
-        this.UserAlbumsList = Model.instance.getAllUserAlbums();
+        this.UserAlbumsList = Model.instance.getAllUserAlbums( albums -> {});
     }
 
     public LiveData<List<Album>> getUserAlbumsList() {
+        Model.instance.getAllUserAlbums( albums -> {
+            this.UserAlbumsList = albums;
+        });
         return UserAlbumsList;
     }
 }
