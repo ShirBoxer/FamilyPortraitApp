@@ -8,6 +8,8 @@
     android:background="@drawable/bg_main"
     tools:context=".MainFragment">
 
+
+
     <ImageView
         android:id="@+id/main_f_img"
         android:layout_width="233dp"
