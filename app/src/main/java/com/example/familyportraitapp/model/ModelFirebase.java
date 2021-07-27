@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -25,35 +26,46 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ModelFirebase {
+    // collections
+    // Firestore collections
     final static String albumsCollection = "albums";
     final static String usersCollection = "users";
+
+    // Storage collections
     final static String PHOTOS = "photos";
 
 
-    private ModelFirebase(){} // mono state class
+    private ModelFirebase(){} // mono state class ??
 
-    public static FirebaseAuth getFirebaseAuth(){
+    public static FirebaseAuth getInstance(){
         return FirebaseAuth.getInstance();
     }
+
+    public static FirebaseUser getCurrentUser(){
+        return getInstance().getCurrentUser();
+    }
+
+    public static FirebaseFirestore getFirestore(){
+        return FirebaseFirestore.getInstance();
+    }
+
 
     /* ################################# ---  User CRUD  --- ################################# */
 
     public static void addUser(User user, final Model.OnCompleteListener listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // get firestore instance
+        FirebaseFirestore db = getFirestore();
+
         db.collection(usersCollection).document(user.getId())
-                .set(user.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("TAG","user added successfully");
-                listener.onComplete();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("TAG","fail adding student");
-                listener.onComplete();
-            }
-        });
+                .set(user.toMap()).addOnCompleteListener()
+                    .addOnSuccessListener((Void aVoid) -> {
+                    Log.d("TAG","user added successfully");
+                            listener.onComplete();
+                    })
+                    .addOnFailureListener((@NonNull Exception e) -> {
+                            Log.d("TAG","fail adding user");
+                            listener.onComplete();
+                    });
     }
 
     public static void getUser(final Model.GetUserListener listener){

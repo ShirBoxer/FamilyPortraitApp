@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class AlbumFragment extends Fragment {
     TextView descriptionTv;
     ImageView mainImgIv;
     FloatingActionButton addBtn;
+    Button editBtn;
     MyAdapter adapter;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -67,7 +69,9 @@ public class AlbumFragment extends Fragment {
         descriptionTv = view.findViewById(R.id.album_f_description_tv);
         mainImgIv = view.findViewById(R.id.album_f_image_iv);
         addBtn = view.findViewById(R.id.album_f_add_btn);
+        editBtn = view.findViewById(R.id.album_f_edit_btn);
         swipeRefresh = view.findViewById(R.id.album_f_swiperefresh);
+
         for(Album a: viewModel.getAlbumsList().getValue()){
             if(a.getId().equals(albumId)){
                 album = new MutableLiveData(a);
@@ -102,14 +106,24 @@ public class AlbumFragment extends Fragment {
                 .placeholder(R.drawable.ic_menu_gallery)
                 .error(R.drawable.ic_menu_gallery)
                 .into(mainImgIv);
+        if(Model.instance.getAuthManager().getCurrentUser()
+                .getEmail().equals(album.getValue().getOwner())) {
+            addBtn.setVisibility(View.VISIBLE);
+            editBtn.setVisibility(View.VISIBLE);
 
-        addBtn.setOnClickListener((v)->{
-            takePicture();
-        });
-        //Select row listener
+            addBtn.setOnClickListener((v) -> {
+                takePicture();
+            });
+
+            editBtn.setOnClickListener((v) -> {
+                AlbumFragmentDirections.ActionAlbumFragmentToEditAlbumFragment action = AlbumFragmentDirections.actionAlbumFragmentToEditAlbumFragment(albumId);
+                Navigation.findNavController(view).navigate(action);
+            });
+        }
+        //Select rectangle listener
         adapter.setOnItemClickListener((int position)->{
             String imageUrl = album.getValue().getPhotosUrlList().get(position);
-            FeedFragmentDirections.ActionFeedFragmentToAlbumFragment action = FeedFragmentDirections.actionFeedFragmentToAlbumFragment(imageUrl);
+            AlbumFragmentDirections.ActionAlbumFragmentToImageFragment action = AlbumFragmentDirections.actionAlbumFragmentToImageFragment(imageUrl, album.getValue().getOwner());
             Navigation.findNavController(view).navigate(action);
         });
 

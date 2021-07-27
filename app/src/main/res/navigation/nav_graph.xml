@@ -64,5 +64,53 @@
         <argument
             android:name="albumId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_albumFragment_to_editAlbumFragment"
+            app:destination="@id/editAlbumFragment" />
+        <action
+            android:id="@+id/action_albumFragment_to_imageFragment"
+            app:destination="@id/imageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editAlbumFragment"
+        android:name="com.example.familyportraitapp.EditAlbumFragment"
+        android:label="fragment_edit_album"
+        tools:layout="@layout/fragment_edit_album" >
+        <argument
+            android:name="albumId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.example.familyportraitapp.ImageFragment"
+        android:label="fragment_image"
+        tools:layout="@layout/fragment_image" >
+        <argument
+            android:name="imageUrl"
+            app:argType="string" />
+        <argument
+            android:name="albumOwner"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.familyportraitapp.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_userAlbumsFragment"
+            app:destination="@id/userAlbumsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userAlbumsFragment"
+        android:name="com.example.familyportraitapp.UserAlbumsFragment"
+        android:label="fragment_user_albums"
+        tools:layout="@layout/fragment_user_albums" >
+        <action
+            android:id="@+id/action_userAlbumsFragment_to_albumFragment"
+            app:destination="@id/albumFragment" />
     </fragment>
 </navigation>

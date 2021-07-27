@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/edit_album_f"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main"
+    android:visibility="visible"
+    tools:context=".EditAlbumFragment">
+
+    <EditText
+        android:id="@+id/edit_album_f_header_et"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="4dp"
+        android:autofillHints=""
+        android:text="album_f HEADER"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_album_f_description_et"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_album_f_header_et" />
+
+    <ImageView
+        android:id="@+id/edit_album_f_image_iv"
+        android:layout_width="158dp"
+        android:layout_height="173dp"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/ic_baseline_map_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_album_f_description_et" />
+
+    <Button
+        android:id="@+id/edit_album_f_save_btn"
+        android:layout_width="150dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="24dp"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_album_f_image_iv" />
+
+    <ImageButton
+        android:id="@+id/edit_album_f_add_pic_btn"
+        android:layout_width="59dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_album_f_image_iv"
+        app:layout_constraintStart_toEndOf="@+id/edit_album_f_image_iv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

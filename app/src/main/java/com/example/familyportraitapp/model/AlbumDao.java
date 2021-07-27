@@ -20,6 +20,7 @@ public interface AlbumDao {
     //if id already exist replace her.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Album... albums);
+
     @Delete
     void delete(Album albums);
 
