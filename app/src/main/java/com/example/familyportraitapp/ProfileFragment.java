@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -29,6 +32,7 @@ import com.example.familyportraitapp.model.MyApplication;
 import com.example.familyportraitapp.model.User;
 import com.squareup.picasso.Picasso;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.familyportraitapp.AlbumFragment.REQUEST_IMAGE_CAPTURE;
@@ -44,6 +48,8 @@ public class ProfileFragment extends Fragment {
     ImageView userImgIv;
     ImageButton addImgBtn;
     User user;
+    Bitmap imageBitmap;
+
     static final int PERMISSION_CODE = 1001;
 
     @Override
@@ -60,10 +66,11 @@ public class ProfileFragment extends Fragment {
         userImgIv = view.findViewById(R.id.profile_f_user_img_iv);
         addImgBtn = view.findViewById(R.id.profile_f_img_btn_btn);
 
-        Model.instance.getUser((User user)->{
-            this.user = user;
+        Model.instance.getUser((newUser)->{
+            this.user = newUser;
             nameTv.setText(user.getName());
             phoneNumTv.setText(user.getPhoneNumber());
+            Log.d("USER",newUser.getImageUrl());
             if (user.getImageUrl() != null && !user.getImageUrl().equals("")){
                 Picasso.get()
                     .load(user.getImageUrl())
@@ -103,29 +110,47 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE){
-            if (resultCode == RESULT_OK){
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                userImgIv.setImageBitmap(imageBitmap);
-                Model.instance.uploadImage(imageBitmap, user.getId() + "_profile_img" , (url)->{
-                    Model.instance.setUserProfileImage(url,(success)-> {
-                        if(success){
-                            Toast.makeText(getContext(), "Success", Toast.LENGTH_LONG).show();
-                            Log.d("USER", "User image successfully updated");
-                            this.user.setImageUrl(url);
+        if(resultCode != RESULT_CANCELED) {
+            switch (requestCode) {
+                case 0:
+                    if (resultCode == RESULT_OK && data != null) {
+                        imageBitmap = (Bitmap) data.getExtras().get("data");
+                        userImgIv.setImageBitmap(imageBitmap);
+                    }
+                    break;
+                case 1:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage =  data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        if (selectedImage != null) {
+                            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                                    filePathColumn, null, null, null);
+                            if (cursor != null) {
+                                cursor.moveToFirst();
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                String picturePath = cursor.getString(columnIndex);
+                                imageBitmap = BitmapFactory.decodeFile(picturePath);
+                                userImgIv.setImageBitmap(imageBitmap);
+                                cursor.close();
+                            }
                         }
-                        else{
-                            Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
-                            Log.d("USER", "User image update failed");
-
-                        }
-                    });
-                });
+                    }
+                    break;
             }
-        }
+            Model.instance.uploadImage(imageBitmap, user.getName() + "_profile_pic",(uri)->{
+                this.user.setImageUrl(uri);
+                Model.instance.setUserProfileImage(uri, (success -> {
+                    if(success){
+                        Toast.makeText(MyApplication.context, "SUCCESS", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(MyApplication.context, "FAILED", Toast.LENGTH_LONG).show();
 
+                    }
 
+                }));
+            });
+        } else
+            Toast.makeText(MyApplication.context, "FAILED",Toast.LENGTH_LONG).show();
     }
 
     private void LoadCDialogAndImage() {

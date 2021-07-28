@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -29,6 +32,7 @@ import com.example.familyportraitapp.model.Model;
 import com.example.familyportraitapp.model.MyApplication;
 import com.squareup.picasso.Picasso;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.familyportraitapp.CreateAlbumFragment.REQUEST_IMAGE_CAPTURE;
@@ -43,6 +47,7 @@ public class EditAlbumFragment extends Fragment {
     FeedViewModel viewModel;
     ImageButton addImgBtn;
     Album album;
+    Bitmap imageBitmap;
     static final int PERMISSION_CODE = 1001;
 
 
@@ -77,7 +82,8 @@ public class EditAlbumFragment extends Fragment {
 
         headerTv.setText(album.getName());
         descriptionTv.setText(album.getDescription());
-        Picasso.get().load(album.getMainPhotoUrl()).into(albumImageIv);
+        if(album.getMainPhotoUrl() != null && !album.getMainPhotoUrl().equals(""))
+            Picasso.get().load(album.getMainPhotoUrl()).into(albumImageIv);
 
         addImgBtn.setOnClickListener((v)->{
             LoadCDialogAndImage();
@@ -86,17 +92,21 @@ public class EditAlbumFragment extends Fragment {
         saveBtn.setOnClickListener((v)->{
             album.setName(headerTv.getText().toString());
             album.setDescription(descriptionTv.getText().toString());
-            Model.instance.saveAlbum(album, (success) -> {
-                if(success){
-                    Log.d("EDIT_ALBUM", "album" + album.getId()+ "edited");
-                    Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_LONG).show();
-                    Navigation.findNavController(view).navigateUp();
-                }else{
-                    Log.d("EDIT_ALBUM", "album" + album.getId()+ "edit was failed");
-                    Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
-                }
+            Model.instance.uploadImage(imageBitmap, headerTv.getText().toString(),(uri)->{
+                album.setMainPhotoUrl(uri);
+                Model.instance.saveAlbum(album, (success) -> {
+                    if(success){
+                        Log.d("EDIT_ALBUM", "album" + album.getId()+ "edited");
+                        Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_LONG).show();
+                        Navigation.findNavController(view).navigateUp();
+                    }else{
+                        Log.d("EDIT_ALBUM", "album" + album.getId()+ "edit was failed");
+                        Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    }
 
+                });
             });
+
 
         });
 
@@ -158,17 +168,40 @@ public class EditAlbumFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE){
-            if (resultCode == RESULT_OK){
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                albumImageIv.setImageBitmap(imageBitmap);
-                Model.instance.uploadImage(imageBitmap, album.getId() + "_album_main_img" , (url)->{
-                    this.album.setMainPhotoUrl(url);
-                });
+        if(resultCode != RESULT_CANCELED) {
+            switch (requestCode) {
+                case 0:
+                    if (resultCode == RESULT_OK && data != null) {
+                        imageBitmap = (Bitmap) data.getExtras().get("data");
+                        albumImageIv.setImageBitmap(imageBitmap);
+                        return;
+                    }
+                    break;
+                case 1:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage =  data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        if (selectedImage != null) {
+                            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                                    filePathColumn, null, null, null);
+                            if (cursor != null) {
+                                cursor.moveToFirst();
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                String picturePath = cursor.getString(columnIndex);
+                                imageBitmap = BitmapFactory.decodeFile(picturePath);
+                                albumImageIv.setImageBitmap(imageBitmap);
+                                cursor.close();
+
+                                return;
+                            }
+                        }
+                    }
+                    break;
             }
-        }
-
-
+        } else
+            Toast.makeText(MyApplication.context, "FAILED",Toast.LENGTH_LONG).show();
     }
+
+
+
 }

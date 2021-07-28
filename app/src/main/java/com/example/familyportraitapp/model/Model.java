@@ -127,7 +127,7 @@ public class Model {
                 Log.d("ALBUM","Success on retrieving all albums");
             }
             else {
-                Log.d("ALBUM","Failed to get all albums");
+                Log.d("ALBUM","No delta between localDB and remote in user albums");
             }
         });
         return allAlbums;
@@ -144,7 +144,7 @@ public class Model {
                 Log.d("ALBUM","Success on retrieving all user albums");
 
             }else {
-                Log.d("ALBUM","Failed to get all user albums");
+                Log.d("ALBUM","No delta between localDB and remote in user albums");
             }
             listener.onComplete(allUserAlbums);
 

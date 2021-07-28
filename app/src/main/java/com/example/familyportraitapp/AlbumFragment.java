@@ -4,7 +4,10 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -42,6 +45,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
@@ -200,16 +204,38 @@ public class AlbumFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE){
-            if (resultCode == RESULT_OK){
-                Bundle extras = data.getExtras();
-                imageBitmap = (Bitmap) extras.get("data");
-                save();
-            }
+            if(resultCode != RESULT_CANCELED) {
+                switch (requestCode) {
+                    case 0:
+                        if (resultCode == RESULT_OK && data != null) {
+                            imageBitmap = (Bitmap) data.getExtras().get("data");
+                            save();
+                            return;
+                        }
+                        break;
+                    case 1:
+                        if (resultCode == RESULT_OK && data != null) {
+                            Uri selectedImage =  data.getData();
+                            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                            if (selectedImage != null) {
+                                Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                                        filePathColumn, null, null, null);
+                                if (cursor != null) {
+                                    cursor.moveToFirst();
+                                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                    String picturePath = cursor.getString(columnIndex);
+                                    imageBitmap = BitmapFactory.decodeFile(picturePath);
+                                    cursor.close();
+                                    save();
+                                    return;
+                                }
+                            }
+                        }
+                        break;
+                }
+            } else
+                Toast.makeText(MyApplication.context, "FAILED",Toast.LENGTH_LONG).show();
         }
-
-
-    }
 
     void save(){
         if(imageBitmap != null){
