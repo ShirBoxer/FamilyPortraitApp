@@ -33,8 +33,10 @@
 
     <ImageView
         android:id="@+id/create_album_f_img_iv"
-        android:layout_width="144dp"
-        android:layout_height="114dp"
+        android:layout_width="154dp"
+        android:layout_height="154dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:layout_marginTop="50dp"
         android:src="@drawable/ic_add"
         app:layout_constraintEnd_toEndOf="parent"

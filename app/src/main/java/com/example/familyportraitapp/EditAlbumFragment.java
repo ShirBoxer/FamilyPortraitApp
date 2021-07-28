@@ -46,7 +46,7 @@ public class EditAlbumFragment extends Fragment {
     FeedViewModel viewModel;
     ImageButton addImgBtn;
     Album album;
-    Bitmap imageBitmap;
+    Bitmap imageBitmap = null;
     static final int PERMISSION_CODE = 1001;
 
 
@@ -84,6 +84,8 @@ public class EditAlbumFragment extends Fragment {
         saveBtn.setOnClickListener((v)->{
             album.setName(nameTv.getText().toString());
             album.setDescription(descriptionTv.getText().toString());
+//           TODO if(imageBitmap == null)
+//                imageBitmap = BitmapFactory.decodeFile(album.getMainPhotoUrl());
             Model.instance.uploadImage(imageBitmap, nameTv.getText().toString(),(uri)->{
                 album.setMainPhotoUrl(uri);
                 Model.instance.saveAlbum(album, (success) -> {

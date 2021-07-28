@@ -184,7 +184,14 @@ public class CreateAlbumFragment extends Fragment {
 
     void saveAlbum(String url){
         String name = nameEt.getText().toString().trim();
-        String description ="This is -->" + category + "<-- Album" + "\n" + descriptionEt.getText().toString().trim();
+        String description;
+
+        if(category == null ||category.equals("None")) {
+            description = "This is --> General <-- Album" + "\n";
+            description.trim();
+        }
+        else
+            description ="This is -->" + category + "<-- Album" + "\n" +descriptionEt.getText().toString().trim();
         String photoUrl;
         String id = System.currentTimeMillis() + "";
         if (url == null)
