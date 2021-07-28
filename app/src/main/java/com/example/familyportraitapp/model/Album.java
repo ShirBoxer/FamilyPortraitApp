@@ -28,7 +28,9 @@ public class Album {
     List<String> photosUrlList; //TODO type converter (to list<String>)
     Long lastUpdated;
     String owner;
+    Long isDeleted;
 
+    final static String IS_DELETED = "isDeleted";
     final static String ID = "id";
     final static String NAME = "name";
     final static String DESCRIPTION = "description";
@@ -50,6 +52,7 @@ public class Album {
         this.lastUpdated = System.currentTimeMillis();
         this.owner = owner;
         this.mainPhotoUrl = mainPhotoUrl;
+        this.isDeleted = new Long(0);
     }
 
     static public void setLocalLastUpdateTime(Long timestamp) {
@@ -61,7 +64,7 @@ public class Album {
     static public Long getLocalLastUpdateTime() {
         return MyApplication
                 .context
-                .getSharedPreferences("TAG", Context.MODE_PRIVATE)
+                .getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE)
                 .getLong(ALBUM_LAST_UPDATED, 0);
     }
 
@@ -74,16 +77,18 @@ public class Album {
         json.put(LAST_UPDATED, FieldValue.serverTimestamp());
         json.put(OWNER, owner);
         json.put(MAIN_PHOTO_URL, mainPhotoUrl);
+        json.put(IS_DELETED, isDeleted);
         return json;
     }
 
-    static public Album createAlbum(Map<String, Object> json) { //TODO: input checking
+    static public Album createAlbum(Map<String, Object> json) {
         Album a = new Album();
         a.setId((String) json.get(ID));
         a.setDescription((String) json.get(DESCRIPTION));
         a.setPhotosUrlList(( List<String>) json.get(PHOTOS_URL_LIST));
         a.setName((String) json.get(NAME));
         a.setOwner((String) json.get(OWNER));
+        a.setDeleted((Long) json.get(IS_DELETED));
         a.setMainPhotoUrl((String)json.get(MAIN_PHOTO_URL));
         Timestamp ts = (Timestamp) json.get(LAST_UPDATED);
         if (ts != null)
@@ -150,5 +155,13 @@ public class Album {
 
     public void setMainPhotoUrl(String mainPhotoUrl) {
         this.mainPhotoUrl = mainPhotoUrl;
+    }
+
+    public Long getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Long deleted) {
+        isDeleted = deleted;
     }
 }

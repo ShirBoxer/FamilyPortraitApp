@@ -11,10 +11,10 @@ import java.util.List;
 
 @Dao
 public interface AlbumDao {
-    @Query("select * from Album ORDER BY lastUpdated DESC")
+    @Query("select * from Album WHERE isDeleted=0 ORDER BY lastUpdated DESC")
     LiveData<List<Album>> getAll();
 
-    @Query("SELECT * FROM Album WHERE owner LIKE :filter ORDER BY lastUpdated DESC")
+    @Query("SELECT * FROM Album WHERE isDeleted=0 AND owner LIKE :filter ORDER BY lastUpdated DESC")
     LiveData<List<Album>> getAllByOwner(String filter);
 
     //if id already exist replace her.
@@ -22,6 +22,7 @@ public interface AlbumDao {
     void insertAll(Album... albums);
 
     @Delete
-    void delete(Album albums);
+    void delete(Album album);
+
 
 }

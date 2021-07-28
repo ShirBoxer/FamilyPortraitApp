@@ -119,6 +119,7 @@ public class EditAlbumFragment extends Fragment {
                         if(success){
                             Log.d("ALBUM", "Album " + album.getId() + "deleted!");
                             Toast.makeText(MyApplication.context, "SUCCESS", Toast.LENGTH_LONG).show();
+                            Navigation.findNavController(view).navigateUp();
                         }else{
                             Log.d("ALBUM", "Album " + album.getId() + "Failed on delete");
                             Toast.makeText(MyApplication.context, "Failed, Please try again", Toast.LENGTH_LONG).show();

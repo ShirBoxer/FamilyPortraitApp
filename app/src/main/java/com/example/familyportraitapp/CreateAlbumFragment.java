@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.familyportraitapp.model.Album;
 import com.example.familyportraitapp.model.Model;
@@ -65,6 +66,7 @@ public class CreateAlbumFragment extends Fragment {
         createBtn = view.findViewById(R.id.create_album_f_create_btn);
         addMainImageBtn = view.findViewById(R.id.create_album_f_add_btn);
         spinner = view.findViewById(R.id.create_album_spinner);
+        pb = view.findViewById(R.id.create_album_f_pb);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(MyApplication.context, R.array.condition, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -94,6 +96,7 @@ public class CreateAlbumFragment extends Fragment {
                 nameEt.setError("Please Enter your album name");
                 return;
             }
+            pb.setVisibility(ProgressBar.VISIBLE);
             save();
 
         });
@@ -132,7 +135,6 @@ public class CreateAlbumFragment extends Fragment {
             });
         builder.show();
     }
-
 
     // request code ~ the number of Operation, (REQUEST_IMAGE_CAPTURE=1)
     @Override
@@ -201,14 +203,16 @@ public class CreateAlbumFragment extends Fragment {
         Album album = new Album(id, name, description, new LinkedList<>() ,"", photoUrl);
 
         Model.instance.saveAlbum(album, (success)->{
+            pb.setVisibility(ProgressBar.INVISIBLE);
             if(success){
-                //TODO TOAST and log
+                Log.d("ALBUM", "Album was saved successfully");
+                Toast.makeText(MyApplication.context, "SUCCESS",Toast.LENGTH_SHORT);
                 Navigation.findNavController(view).navigate(R.id.action_createAlbumFragment_to_feedFragment);
             }
             else{
-                //TODO TOAST and log
+                Toast.makeText(MyApplication.context, "Please try again",Toast.LENGTH_SHORT);
+                Log.d("ALBUM", "Album saving was failed");
             }
-
         });
 
 

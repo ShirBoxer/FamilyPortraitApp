@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.familyportraitapp.model.Album;
 import com.example.familyportraitapp.model.Model;
 import com.example.familyportraitapp.model.MyApplication;
 import com.example.familyportraitapp.model.User;
@@ -95,12 +96,17 @@ public class ProfileFragment extends Fragment {
             Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_mainFragment);
         });
 
-        deleteAccountBtn.setOnClickListener((v)->{
+        deleteAccountBtn.setOnClickListener((v)-> {
+            Model.instance.deleteUserAlbums((success) -> {
+                        if (success)
+                            Log.d("ALBUM", "Delete user albums success");
+                        else
+                            Log.d("ALBUM", "Delete user albums failed");
+                    }
+            );
             Model.instance.deleteAccount();
             Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_mainFragment);
-
         });
-
         return view;
     }
 

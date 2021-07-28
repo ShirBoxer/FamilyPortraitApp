@@ -66,7 +66,6 @@ public class UserAlbumsFragment extends Fragment {
         navBar.setVisibility(View.VISIBLE);
         swipeRefresh.setOnRefreshListener(() -> {
             viewModel.getUserAlbumsList();
-            ; //TODO: CREATE REFRESH FUNCTION IN THE VIEWMODEL OBJECT
         });
         // set progressBar and swipeRefresh states
         setupProgressListener();

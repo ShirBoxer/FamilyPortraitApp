@@ -100,6 +100,8 @@ public class Model {
         executorService.execute(()->{
             Long lastUpdate = new Long(0);
             for(Album a: albums.getValue()) {
+                if(a.getDeleted() == 1)
+                    continue;
                 // update the local db with the new records
                 AppLocalDB.db.albumDao().insertAll(a);
                 //update the local last update time
@@ -146,6 +148,7 @@ public class Model {
             listener.onComplete(allUserAlbums);
 
         });
+        userAlbumsLoadingState.setValue(LoadingState.loaded);
         return allUserAlbums;
     }
 
@@ -162,9 +165,24 @@ public class Model {
 
     }
 
+    public void deleteUserAlbums( OnCompleteListener listener){
+        ModelFirebase.deleteUserAlbums((albums) -> {
+            if(albums != null){
+                executorService.execute(()->{
+                    for(int i = 0; i < albums.getValue().size(); i++)
+                        AppLocalDB.db.albumDao().delete(albums.getValue().get(i));
+                });
+            }
+            else{
+                listener.onComplete(false);
+            }
+        });
+    }
+
     public void deleteAlbum(Album album, OnCompleteListener listener){
+        album.setDeleted(new Long(1));
         albumsLoadingState.setValue(LoadingState.loading);
-        ModelFirebase.deleteAlbum(album, (success)->{
+        ModelFirebase.saveAlbum(album, (success)->{
             if(success){
                 getAllAlbums((albums)->{});
                 executorService.execute(()->{
@@ -176,9 +194,6 @@ public class Model {
         });
 
     }
-
-
-
 
     /* ################################# ---  Utils  --- ################################# */
 

@@ -131,6 +131,28 @@ public class ModelFirebase {
                 .addOnFailureListener((v) -> listener.onComplete(false));
     }
 
+    public static void deleteUserAlbums(final Model.OnGetAlbumsComplete listener){
+        List<Album> albums = new LinkedList<>();
+        FirebaseFirestore db = getFirestore();
+        db.collection(albumsCollection)
+                .whereEqualTo("owner", getCurrentUser().getEmail())
+                .get().addOnCompleteListener((task -> {
+            if(task.isSuccessful()){
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    albums.add(Album.createAlbum(document.getData()));
+                    albums.get(albums.size() - 1).setDeleted(new Long(1));
+                    db.collection(albumsCollection).document( albums.get(albums.size() - 1).getId())
+                            .set( albums.get(albums.size() - 1).toJson());
+
+                }
+                listener.onComplete(new MutableLiveData<>(albums));
+            }
+            else
+                {
+                listener.onComplete(null);
+            }
+        }));
+    }
 
     /* ################################# ---  Album CRUD  --- ################################# */
 
@@ -140,6 +162,7 @@ public class ModelFirebase {
         String owner = getCurrentUser().getEmail();
         db.collection(albumsCollection)
                 .whereGreaterThanOrEqualTo(Album.LAST_UPDATED, new Timestamp(since,0))
+                .whereEqualTo("isDeleted", 0)
                 .get()
                 .addOnCompleteListener((@NonNull Task<QuerySnapshot> task)->{
                         List<Album> list = new LinkedList<Album>();
@@ -161,6 +184,7 @@ public class ModelFirebase {
         db.collection(albumsCollection)
                 .whereGreaterThanOrEqualTo(Album.LAST_UPDATED, new Timestamp(since,0))
                 .whereEqualTo(Album.OWNER, owner)
+                .whereEqualTo("isDeleted", 0)
                 .get()
                 .addOnCompleteListener((@NonNull Task<QuerySnapshot> task)->{
                     List<Album> list = new LinkedList<Album>();
@@ -191,20 +215,6 @@ public class ModelFirebase {
                     Log.d("ALBUM", "saveAlbum failed");
                 });
     }
-
-    public static void deleteAlbum(Album album, Model.OnCompleteListener listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(albumsCollection).document(album.getId()).delete()
-                .addOnSuccessListener((v) ->{
-                    Log.d("ALBUM", "deleteAlbum success");
-                    listener.onComplete(true);
-                })
-                .addOnFailureListener((e) ->{
-                    Log.d("ALBUM", "deleteAlbum success");
-                    listener.onComplete(false);
-                });;
-    }
-
 
     /* ################################# ---  Utils  --- ################################# */
 
