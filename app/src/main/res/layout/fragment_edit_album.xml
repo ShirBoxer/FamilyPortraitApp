@@ -9,38 +9,44 @@
     android:visibility="visible"
     tools:context=".EditAlbumFragment">
 
-    <EditText
-        android:id="@+id/edit_album_f_header_et"
+    <TextView
+        android:id="@+id/edit_album_f_header1_et"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="4dp"
         android:autofillHints=""
-        android:text="album_f HEADER"
+        android:text="Edit album"
         android:textAlignment="center"
-        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#1B1313"
+        android:textColorLink="#100B0B"
+        android:textSize="45sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edit_album_f_description_et"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_width="358dp"
+        android:layout_height="162dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:text="TextView"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_album_f_header_et" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_album_f_name_et" />
 
     <ImageView
         android:id="@+id/edit_album_f_image_iv"
         android:layout_width="158dp"
         android:layout_height="173dp"
         android:layout_marginStart="124dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/ic_baseline_map_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_album_f_description_et" />
@@ -51,6 +57,7 @@
         android:layout_height="62dp"
         android:layout_marginTop="24dp"
         android:text="Save"
+        app:backgroundTint="#185C56"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_album_f_image_iv" />
@@ -65,14 +72,28 @@
 
     <Button
         android:id="@+id/edit_album_f_delete_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="111dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="36dp"
         android:background="#ED2323"
         android:shadowColor="#C61818"
         android:text="Delete"
+        app:backgroundTint="#E34646"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_album_f_save_btn" />
+
+    <EditText
+        android:id="@+id/edit_album_f_name_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_album_f_header1_et" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

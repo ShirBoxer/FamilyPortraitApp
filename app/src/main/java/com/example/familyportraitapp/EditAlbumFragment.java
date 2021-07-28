@@ -35,11 +35,10 @@ import com.squareup.picasso.Picasso;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
-import static com.example.familyportraitapp.CreateAlbumFragment.REQUEST_IMAGE_CAPTURE;
 
 
 public class EditAlbumFragment extends Fragment {
-    EditText headerTv;
+    EditText nameTv;
     EditText descriptionTv;
     ImageView albumImageIv;
     Button saveBtn;
@@ -56,7 +55,7 @@ public class EditAlbumFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_album, container, false);
-        headerTv = view.findViewById(R.id.edit_album_f_header_et);
+        nameTv = view.findViewById(R.id.edit_album_f_name_et);
         descriptionTv = view.findViewById(R.id.edit_album_f_description_et);
         albumImageIv = view.findViewById(R.id.edit_album_f_image_iv);
         saveBtn = view.findViewById(R.id.edit_album_f_save_btn);
@@ -80,7 +79,7 @@ public class EditAlbumFragment extends Fragment {
             return view;
         }
 
-        headerTv.setText(album.getName());
+        nameTv.setText(album.getName());
         descriptionTv.setText(album.getDescription());
         if(album.getMainPhotoUrl() != null && !album.getMainPhotoUrl().equals(""))
             Picasso.get().load(album.getMainPhotoUrl()).into(albumImageIv);
@@ -90,9 +89,9 @@ public class EditAlbumFragment extends Fragment {
         });
 
         saveBtn.setOnClickListener((v)->{
-            album.setName(headerTv.getText().toString());
+            album.setName(nameTv.getText().toString());
             album.setDescription(descriptionTv.getText().toString());
-            Model.instance.uploadImage(imageBitmap, headerTv.getText().toString(),(uri)->{
+            Model.instance.uploadImage(imageBitmap, nameTv.getText().toString(),(uri)->{
                 album.setMainPhotoUrl(uri);
                 Model.instance.saveAlbum(album, (success) -> {
                     if(success){

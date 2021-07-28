@@ -5,14 +5,18 @@
     android:id="@+id/user_albums_f"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/bg_main"
     tools:context=".UserAlbumsFragment">
     <!-- selectable color appearance -->
     <TextView
         android:id="@+id/user_albums_f_header_tv"
-        android:layout_width="397dp"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:text="TODO: Header"
+        android:text="My Albums"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="36sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,8 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_albums_f_header_tv">
-
-
 
 
         <androidx.recyclerview.widget.RecyclerView

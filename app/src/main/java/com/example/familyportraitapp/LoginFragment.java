@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment {
             MainActivity.bottomNavigationView.setVisibility(View.GONE);
 
         registerTv.setOnClickListener((v)->{
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
+            Navigation.findNavController(view).navigateUp();
         });
 
         loginBtn.setOnClickListener((v)->{

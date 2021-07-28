@@ -5,6 +5,7 @@
     android:id="@+id/profile_f"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_main"
     tools:context=".ProfileFragment">
 
     <RelativeLayout
@@ -75,12 +76,13 @@
 
     <Button
         android:id="@+id/profile_f_albums_btn"
-        android:layout_width="230dp"
-        android:layout_height="42dp"
+        android:layout_width="236dp"
+        android:layout_height="61dp"
         android:layout_marginStart="160dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="160dp"
         android:text="My Albums"
+        app:backgroundTint="#54A5AF"
         app:cornerRadius="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,6 +107,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="64dp"
         android:text="Log Out"
+        app:backgroundTint="#503B77"
         app:cornerRadius="100sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -119,6 +122,7 @@
         android:fontFamily="serif-monospace"
         android:text="Phone Number"
         android:textColorHint="#C9052350"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -126,9 +130,10 @@
 
     <TextView
         android:id="@+id/profile_f_phone_tv"
-        android:layout_width="218dp"
-        android:layout_height="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
