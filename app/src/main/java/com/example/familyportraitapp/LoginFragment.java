@@ -65,6 +65,7 @@ public class LoginFragment extends Fragment {
                 return;
             }
             Model.instance.logIn(email, password, (success) -> {
+                pb.setVisibility(ProgressBar.INVISIBLE);
                 if(success){
                     CharSequence text = "Logged in Successfully";
                     Log.d("TAG", text.toString());
@@ -74,11 +75,8 @@ public class LoginFragment extends Fragment {
                     loginBtn.setEnabled(true);
                     Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
                     Log.d("TAG", "Login failed for User : " + email);
-
                 }
             });
-
-
         });
 
         forgotPassTv.setOnClickListener((v)->{

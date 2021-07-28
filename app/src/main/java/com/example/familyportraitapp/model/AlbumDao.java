@@ -17,7 +17,7 @@ public interface AlbumDao {
     @Query("SELECT * FROM Album WHERE isDeleted=0 AND owner LIKE :filter ORDER BY lastUpdated DESC")
     LiveData<List<Album>> getAllByOwner(String filter);
 
-    //if id already exist replace her.
+    //if id already exist replace it.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Album... albums);
 

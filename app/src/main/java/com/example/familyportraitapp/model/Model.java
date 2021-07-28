@@ -20,12 +20,7 @@ import java.util.concurrent.Executors;
 public class Model {
     public static final Model instance = new Model();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
-
     private Model() {}
-
-
-
-
     public enum LoadingState {
         loading,
         loaded,
@@ -38,8 +33,6 @@ public class Model {
 
     public MutableLiveData<LoadingState> userAlbumsLoadingState = new MutableLiveData<LoadingState>(LoadingState.loaded);
     LiveData<List<Album>> allUserAlbums = null;
-
-
 
     /* ################################# ---  Interfaces  --- ################################# */
 
@@ -54,7 +47,6 @@ public class Model {
     public interface UploadImageListener{
         void onComplete(String url);
     }
-
 
     /* ################################# ---  User CRUD  --- ################################# */
 
@@ -134,6 +126,7 @@ public class Model {
     }
 
     public LiveData<List<Album>> getAllUserAlbums(OnGetAlbumsComplete listener){
+
         allUserAlbums = AppLocalDB.db.albumDao().getAllByOwner(ModelFirebase.getCurrentUser().getEmail());
         userAlbumsLoadingState.setValue(LoadingState.loading);
         // Read the local last update time
@@ -142,9 +135,7 @@ public class Model {
             if(albums != null && albums.getValue() != null){
                 updateDB(albums, userAlbumsLoadingState);
                 Log.d("ALBUM","Success on retrieving all user albums");
-
             }
-
             listener.onComplete(allUserAlbums);
 
         });
@@ -200,8 +191,5 @@ public class Model {
     public void uploadImage(Bitmap imageBmp, String name, final UploadImageListener listener) {
         ModelFirebase.uploadImage(imageBmp, name, listener);
     }
-
-
-
 
 }

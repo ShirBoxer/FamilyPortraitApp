@@ -32,16 +32,13 @@ import java.util.List;
 
 public class ModelFirebase {
     // collections
-    // Firestore collections
+    // Fire store collections
     final static String albumsCollection = "albums";
     final static String usersCollection = "users";
-
     // Storage collections
     final static String PHOTOS = "photos";
 
-
     private ModelFirebase(){} // mono state class ??
-
 
     public static FirebaseAuth getAuthManager(){
         return FirebaseAuth.getInstance();
@@ -77,8 +74,6 @@ public class ModelFirebase {
                     }
 
                 });
-
-
     }
 
     public static void getUser(final Model.GetUserListener listener){
@@ -143,7 +138,6 @@ public class ModelFirebase {
                     albums.get(albums.size() - 1).setDeleted(new Long(1));
                     db.collection(albumsCollection).document( albums.get(albums.size() - 1).getId())
                             .set( albums.get(albums.size() - 1).toJson());
-
                 }
                 listener.onComplete(new MutableLiveData<>(albums));
             }
@@ -156,26 +150,22 @@ public class ModelFirebase {
 
     /* ################################# ---  Album CRUD  --- ################################# */
 
-
-    public static void getAllAlbums(Long since, Model.OnGetAlbumsComplete listener){
+    public static void getAllAlbums(Long since, Model.OnGetAlbumsComplete listener) {
         FirebaseFirestore db = getFirestore();
         String owner = getCurrentUser().getEmail();
         db.collection(albumsCollection)
-                .whereGreaterThanOrEqualTo(Album.LAST_UPDATED, new Timestamp(since,0))
+                .whereGreaterThanOrEqualTo(Album.LAST_UPDATED, new Timestamp(since, 0))
                 .whereEqualTo("isDeleted", 0)
                 .get()
-                .addOnCompleteListener((@NonNull Task<QuerySnapshot> task)->{
-                        List<Album> list = new LinkedList<Album>();
-                        if(task.isSuccessful()){
-                            for (QueryDocumentSnapshot document : task.getResult())
-                                list.add(Album.createAlbum(document.getData()));
-                            listener.onComplete(new MutableLiveData<>(list));
-                        }
-                        else
-                            listener.onComplete(null);
-
+                .addOnCompleteListener((@NonNull Task<QuerySnapshot> task) -> {
+                    List<Album> list = new LinkedList<Album>();
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult())
+                            list.add(Album.createAlbum(document.getData()));
+                        listener.onComplete(new MutableLiveData<>(list));
+                    } else
+                        listener.onComplete(null);
                 });
-
     }
 
     public static void getAllUserAlbums(Long since, Model.OnGetAlbumsComplete listener){
@@ -201,7 +191,6 @@ public class ModelFirebase {
     }
 
     public static void saveAlbum(Album album, Model.OnCompleteListener listener) {
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         album.setOwner(getCurrentUser().getEmail());
         db.collection(albumsCollection).document(album.getId())
@@ -217,7 +206,6 @@ public class ModelFirebase {
     }
 
     /* ################################# ---  Utils  --- ################################# */
-
 
     public static void uploadImage(Bitmap imageBmp, String name, final Model.UploadImageListener listener){
         // get firebase storage instance (singleton)

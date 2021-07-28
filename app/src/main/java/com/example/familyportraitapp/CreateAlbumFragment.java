@@ -52,6 +52,7 @@ public class CreateAlbumFragment extends Fragment {
     static final int PERMISSION_CODE = 1001;
     Bitmap imageBitmap;
     Spinner spinner;
+    String category;
     View view;
 
 
@@ -76,10 +77,9 @@ public class CreateAlbumFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Object item = parent.getItemAtPosition(position);
                 if (item != null) {
-                    Log.d("ITEM", item.toString());
+                    category = (String) item;
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -90,7 +90,6 @@ public class CreateAlbumFragment extends Fragment {
             LoadCDialogAndImage();
         });
 
-
         createBtn.setOnClickListener((v) -> {
             if (nameEt.getText().toString().isEmpty()) {
                 nameEt.setError("Please Enter your album name");
@@ -98,9 +97,7 @@ public class CreateAlbumFragment extends Fragment {
             }
             pb.setVisibility(ProgressBar.VISIBLE);
             save();
-
         });
-
         return view;
     }
 
@@ -121,7 +118,6 @@ public class CreateAlbumFragment extends Fragment {
                         //permission not granted, request it
                         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
                         requestPermissions(permissions, PERMISSION_CODE);
-
                     }
                     else
                     {
@@ -131,7 +127,6 @@ public class CreateAlbumFragment extends Fragment {
 
                 } else if (options[item].equals("Cancel"))
                     dialog.dismiss();
-
             });
         builder.show();
     }
@@ -140,7 +135,6 @@ public class CreateAlbumFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case 0:
@@ -186,13 +180,11 @@ public class CreateAlbumFragment extends Fragment {
         }else{
             saveAlbum(null);
         }
-
-
     }
 
     void saveAlbum(String url){
         String name = nameEt.getText().toString().trim();
-        String description = descriptionEt.getText().toString().trim();
+        String description ="This is -->" + category + "<-- Album" + "\n" + descriptionEt.getText().toString().trim();
         String photoUrl;
         String id = System.currentTimeMillis() + "";
         if (url == null)
@@ -201,7 +193,6 @@ public class CreateAlbumFragment extends Fragment {
             photoUrl = url;
 
         Album album = new Album(id, name, description, new LinkedList<>() ,"", photoUrl);
-
         Model.instance.saveAlbum(album, (success)->{
             pb.setVisibility(ProgressBar.INVISIBLE);
             if(success){
@@ -214,11 +205,5 @@ public class CreateAlbumFragment extends Fragment {
                 Log.d("ALBUM", "Album saving was failed");
             }
         });
-
-
-
     }
-
-
-
 }

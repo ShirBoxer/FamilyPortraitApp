@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class User {
-
     private String id;
     private String imageUrl; // User image
     private String name;
     private String phoneNumber;
-
     public User() {
     }
 

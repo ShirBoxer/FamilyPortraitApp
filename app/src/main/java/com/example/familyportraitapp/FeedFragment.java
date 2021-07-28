@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,6 @@ public class FeedFragment extends Fragment {
         //Select row listener
         adapter.setOnItemClickListener((int position)->{
             String albumId = albumsList.getValue().get(position).getId();
-            //TODO
             FeedFragmentDirections.ActionFeedFragmentToAlbumFragment action = FeedFragmentDirections.actionFeedFragmentToAlbumFragment(albumId);
             Navigation.findNavController(view).navigate(action);
         });
@@ -88,7 +88,7 @@ public class FeedFragment extends Fragment {
                     swipeRefresh.setRefreshing(true);
                     break;
                 case error:
-                    //TODO: display error message (toast)
+                    Log.d("PB", "albumsLoadingState WAS ON ERROR STATE");
             }
         });
     }
@@ -116,9 +116,6 @@ public class FeedFragment extends Fragment {
                     }
                 }
             });
-
-
-
         }
 
         public void bind(Album album) {
@@ -139,6 +136,7 @@ public class FeedFragment extends Fragment {
     public interface OnItemClickListener{
         void onClick(int position);
     }
+
     // Managing View logic.
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         OnItemClickListener listener;

@@ -72,13 +72,6 @@ public class EditAlbumFragment extends Fragment {
             }
         }
 
-        if (album == null){
-            //TOAST
-            //LOG
-            //BACK TO FEED
-            return view;
-        }
-
         nameTv.setText(album.getName());
         descriptionTv.setText(album.getDescription());
         if(album.getMainPhotoUrl() != null && !album.getMainPhotoUrl().equals(""))
@@ -119,7 +112,7 @@ public class EditAlbumFragment extends Fragment {
                         if(success){
                             Log.d("ALBUM", "Album " + album.getId() + "deleted!");
                             Toast.makeText(MyApplication.context, "SUCCESS", Toast.LENGTH_LONG).show();
-                            Navigation.findNavController(view).navigateUp();
+                            Navigation.findNavController(view).navigate(R.id.action_editAlbumFragment_to_feedFragment);
                         }else{
                             Log.d("ALBUM", "Album " + album.getId() + "Failed on delete");
                             Toast.makeText(MyApplication.context, "Failed, Please try again", Toast.LENGTH_LONG).show();

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,15 +68,12 @@ public class UserAlbumsFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(() -> {
             viewModel.getUserAlbumsList();
         });
-        // set progressBar and swipeRefresh states
-        setupProgressListener();
+
         // observe liveData object on start and resume
         // notify adapter when posts list arrive
         viewModel.getUserAlbumsList()
                 .observe(getViewLifecycleOwner(), (aPList) -> adapter.notifyDataSetChanged());
-
-
-        return view;
+         return view;
     }
 
     private void setupProgressListener() {
@@ -87,8 +85,8 @@ public class UserAlbumsFragment extends Fragment {
                 case loading:
                     swipeRefresh.setRefreshing(true);
                     break;
-                case error:
-                    //TODO: display error message (toast)
+                default:
+                    Log.d("PB", "userAlbumsLoadingState WAS ON ERROR STATE");
             }
         });
     }
@@ -100,7 +98,6 @@ public class UserAlbumsFragment extends Fragment {
         TextView stateTv;
         TextView descriptionTv;
         ImageView picIv;
-
 
         public MyViewHolder(@NonNull View itemView, UserAlbumsFragment.OnItemClickListener listener) {
             super(itemView);
@@ -116,9 +113,6 @@ public class UserAlbumsFragment extends Fragment {
                     }
                 }
             });
-
-
-
         }
 
         public void bind(Album album) {

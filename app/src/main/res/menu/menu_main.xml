@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/feedFragment"
-        android:icon="@drawable/ic_baseline_home_24"
+        android:icon="?attr/actionModeShareDrawable"
         android:title="Feed" />
     <item
         android:id="@+id/createAlbumFragment"

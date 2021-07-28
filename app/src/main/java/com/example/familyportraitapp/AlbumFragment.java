@@ -54,19 +54,17 @@ public class AlbumFragment extends Fragment {
     LiveData<Album> album;
     FeedViewModel viewModel;
     SwipeRefreshLayout swipeRefresh;
-
     TextView headerTv;
     TextView descriptionTv;
     ImageView mainImgIv;
     FloatingActionButton addBtn;
     Button editBtn;
     MyAdapter adapter;
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     Bitmap imageBitmap;
     View view;
-    static final int PERMISSION_CODE = 1001;
 
+    static final int PERMISSION_CODE = 1001;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,25 +88,15 @@ public class AlbumFragment extends Fragment {
                 break;
             }
         }
-        if(album == null){
-            //TOAST
-            //LOG
-            //BACK TO FEED
-            return view;
-        }
 
         RecyclerView recyclerView = view.findViewById(R.id.album_f_recycler);
         //better performance
         recyclerView.setHasFixedSize(true);
-
         RecyclerView.LayoutManager manager = new GridLayoutManager(this.getContext(), 3);
 
-
         recyclerView.setLayoutManager(manager);
-
         adapter = new MyAdapter();
         recyclerView.setAdapter(adapter);
-        //album = viewModel.getAlbum();
 
         headerTv.setText(album.getValue().getName());
         descriptionTv.setText(album.getValue().getDescription());
@@ -296,7 +284,6 @@ public class AlbumFragment extends Fragment {
             }
         }
     }
-
 
     public interface OnItemClickListener{
         void onClick(int position);

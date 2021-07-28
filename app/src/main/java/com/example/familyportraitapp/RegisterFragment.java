@@ -92,7 +92,7 @@ public class RegisterFragment extends Fragment {
             regBtn.setEnabled(false);
             User user = new User(mail, "", name, phoneNum);
 
-            //TODO
+
             Model.instance.createUser(user ,pass1, (success) -> {
                 if(success) {
                     Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_LONG).show();

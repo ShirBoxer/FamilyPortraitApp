@@ -29,8 +29,6 @@ public class ImageFragment extends Fragment {
         String albumOwner = ImageFragmentArgs.fromBundle(getArguments()).getAlbumOwner();
 
         mainImageIv = view.findViewById(R.id.image_f_iv);
-
-
         Picasso.get()
                 .load(imageUrl)
                 .placeholder(R.drawable.ic_menu_gallery)

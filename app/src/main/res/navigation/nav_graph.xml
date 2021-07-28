@@ -76,6 +76,9 @@
         <argument
             android:name="albumId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_editAlbumFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageFragment"

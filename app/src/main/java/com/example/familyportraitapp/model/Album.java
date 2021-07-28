@@ -25,7 +25,7 @@ public class Album {
     String description;
     String mainPhotoUrl;
     @TypeConverters(Converters.class)
-    List<String> photosUrlList; //TODO type converter (to list<String>)
+    List<String> photosUrlList;
     Long lastUpdated;
     String owner;
     Long isDeleted;
