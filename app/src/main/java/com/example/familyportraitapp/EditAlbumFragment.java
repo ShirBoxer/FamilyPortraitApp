@@ -84,23 +84,25 @@ public class EditAlbumFragment extends Fragment {
         saveBtn.setOnClickListener((v)->{
             album.setName(nameTv.getText().toString());
             album.setDescription(descriptionTv.getText().toString());
-//           TODO if(imageBitmap == null)
-//                imageBitmap = BitmapFactory.decodeFile(album.getMainPhotoUrl());
-            Model.instance.uploadImage(imageBitmap, nameTv.getText().toString(),(uri)->{
-                album.setMainPhotoUrl(uri);
-                Model.instance.saveAlbum(album, (success) -> {
-                    if(success){
-                        Log.d("EDIT_ALBUM", "album" + album.getId()+ "edited");
-                        Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_LONG).show();
-                        Navigation.findNavController(view).navigateUp();
-                    }else{
-                        Log.d("EDIT_ALBUM", "album" + album.getId()+ "edit was failed");
-                        Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
-                    }
+            if(imageBitmap == null)
+                Toast.makeText(view.getContext(), "Please pick an image", Toast.LENGTH_LONG).show();
+            else {
+                Model.instance.uploadImage(imageBitmap, nameTv.getText().toString(), (uri) -> {
+                    album.setMainPhotoUrl(uri);
+                    Model.instance.saveAlbum(album, (success) -> {
+                        if (success) {
+                            Log.d("EDIT_ALBUM", "album" + album.getId() + "edited");
+                            Toast.makeText(MyApplication.context, "SUCCESS", Toast.LENGTH_LONG).show();
+                            Navigation.findNavController(view).navigateUp();
+                        } else {
+                            Log.d("EDIT_ALBUM", "album" + album.getId() + "edit was failed");
+                            Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
+                        }
 
+                    });
                 });
-            });
-
+            }
 
         });
 

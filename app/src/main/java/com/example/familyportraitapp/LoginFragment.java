@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.familyportraitapp.model.Model;
-
+import com.example.familyportraitapp.model.MyApplication;
 
 
 public class LoginFragment extends Fragment {
@@ -73,7 +73,7 @@ public class LoginFragment extends Fragment {
                     Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_feedFragment);
                 }else{
                     loginBtn.setEnabled(true);
-                    Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
                     Log.d("TAG", "Login failed for User : " + email);
                 }
             });
@@ -91,7 +91,7 @@ public class LoginFragment extends Fragment {
                 String mail = resetMail.getText().toString();
                 Model.instance.resetPassword(mail, (success) -> {
                     if (success) {
-                        Toast.makeText(getContext(), "Reset Link Sent To Your Email", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyApplication.context, "Reset Link Sent To Your Email", Toast.LENGTH_LONG).show();
                         Log.d("PASSWORD", "Reset password  success: ");
 
                     } else {

@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.familyportraitapp.model.Model;
+import com.example.familyportraitapp.model.MyApplication;
 import com.example.familyportraitapp.model.User;
 
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class RegisterFragment extends Fragment {
 
             Model.instance.createUser(user ,pass1, (success) -> {
                 if(success) {
-                    Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MyApplication.context, "SUCCESS", Toast.LENGTH_LONG).show();
                     Log.d("USER","User " + user.getId() +  " added successfully");
                     Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment);
                 }
@@ -104,7 +105,7 @@ public class RegisterFragment extends Fragment {
                     pb.setVisibility(View.GONE);
                     regBtn.setEnabled(true);
                      Log.d("USER","User " + user.getId() +  " Failed to create user");
-                    Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
                  }
             });
 

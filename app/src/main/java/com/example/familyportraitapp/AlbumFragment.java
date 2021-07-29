@@ -132,8 +132,8 @@ public class AlbumFragment extends Fragment {
         navBar.setVisibility(View.VISIBLE);
 
         swipeRefresh.setOnRefreshListener(() -> {
-            Model.instance.getAllUserAlbums((success) -> {});
-            ; //TODO: CREATE REFRESH FUNCTION IN THE VIEWMODEL OBJECT
+            Model.instance.getAllUserAlbums((success) -> {swipeRefresh.setRefreshing(false);});
+
         });
 
         setupProgressListener();
@@ -155,7 +155,7 @@ public class AlbumFragment extends Fragment {
                     swipeRefresh.setRefreshing(true);
                     break;
                 case error:
-                    //TODO: display error message (toast)
+                    Log.d("PB", "albumLoadingState WAS ON ERROR STATE");
             }
         });
     }
@@ -222,7 +222,7 @@ public class AlbumFragment extends Fragment {
                         break;
                 }
             } else
-                Toast.makeText(MyApplication.context, "FAILED",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "FAILED",Toast.LENGTH_LONG).show();
         }
 
     void save(){
@@ -234,7 +234,7 @@ public class AlbumFragment extends Fragment {
                         if(success){
                             this.adapter.notifyDataSetChanged();
                         }else{
-                            Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
                         }
 
                     });
@@ -246,7 +246,7 @@ public class AlbumFragment extends Fragment {
             });
         }
         else{
-            Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+            Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
             return;
         }
         //dshmdNavigation.findNavController(view).navigateUp();
@@ -308,7 +308,6 @@ public class AlbumFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             String imageUrl =  album.getValue().getPhotosUrlList().get(position);
-            Log.d("onBindViewHolder", imageUrl);
             holder.bind(imageUrl);
 
         }
@@ -316,7 +315,6 @@ public class AlbumFragment extends Fragment {
         // get number of
         @Override
         public int getItemCount() {
-            Log.d("getItemCount", album.getValue().getPhotosUrlList().size() + "");
             return album.getValue().getPhotosUrlList().size();
         }
     }
