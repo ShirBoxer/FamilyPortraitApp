@@ -240,13 +240,13 @@ public class AlbumFragment extends Fragment {
                     });
                 }
                 else{
-                    Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
                     return;
                 }
             });
         }
         else{
-            Toast.makeText(MyApplication.context, "Please try again", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Please try again", Toast.LENGTH_LONG).show();
             return;
         }
         //dshmdNavigation.findNavController(view).navigateUp();

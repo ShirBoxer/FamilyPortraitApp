@@ -69,7 +69,7 @@ public class LoginFragment extends Fragment {
                 if(success){
                     CharSequence text = "Logged in Successfully";
                     Log.d("TAG", text.toString());
-                    Toast.makeText(getContext(),text , Toast.LENGTH_LONG).show();
+                    Toast.makeText(MyApplication.context,text , Toast.LENGTH_LONG).show();
                     Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_feedFragment);
                 }else{
                     loginBtn.setEnabled(true);
@@ -95,7 +95,7 @@ public class LoginFragment extends Fragment {
                         Log.d("PASSWORD", "Reset password  success: ");
 
                     } else {
-                        Toast.makeText(getContext(), "Error ! Reset Link did not Sent !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyApplication.context, "Error ! Reset Link did not Sent !", Toast.LENGTH_LONG).show();
                         Log.d("PASSWORD", "Reset password  failed for user: " + mail);
                     }
                 });

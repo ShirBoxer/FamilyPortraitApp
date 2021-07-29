@@ -85,7 +85,7 @@ public class EditAlbumFragment extends Fragment {
             album.setName(nameTv.getText().toString());
             album.setDescription(descriptionTv.getText().toString());
             if(imageBitmap == null)
-                Toast.makeText(view.getContext(), "Please pick an image", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Please pick an image", Toast.LENGTH_LONG).show();
             else {
                 Model.instance.uploadImage(imageBitmap, nameTv.getText().toString(), (uri) -> {
                     album.setMainPhotoUrl(uri);
@@ -196,7 +196,7 @@ public class EditAlbumFragment extends Fragment {
                     break;
             }
         } else
-            Toast.makeText(MyApplication.context, "FAILED",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "FAILED",Toast.LENGTH_LONG).show();
     }
 
 

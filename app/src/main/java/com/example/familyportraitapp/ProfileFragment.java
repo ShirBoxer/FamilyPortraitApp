@@ -156,7 +156,7 @@ public class ProfileFragment extends Fragment {
                 }));
             });
         } else
-            Toast.makeText(MyApplication.context, "FAILED",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "FAILED",Toast.LENGTH_LONG).show();
     }
 
     private void LoadCDialogAndImage() {
